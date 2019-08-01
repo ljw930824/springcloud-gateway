@@ -58,3 +58,5 @@ build/
 .vscode/
 /config/test/config-cache/test+default+application.properties
 /config/test/config-cache/test+default+TEST1.123.properties
+/actuator-server-admin/target/
+/core/target/
