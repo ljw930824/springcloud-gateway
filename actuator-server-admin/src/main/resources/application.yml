@@ -1,0 +1,7 @@
+server:
+  port: 8082
+  use-forward-headers: true
+
+spring.boot.admin.client:
+  username: sba-client
+  password: s3cret

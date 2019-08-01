@@ -1,0 +1,90 @@
+server:
+  port: 8081
+  use-forward-headers: true
+  tomcat:
+    remote-ip-header: X-Real-IP
+    protocol-header: X-Forwarded-Proto
+
+info:
+  version: @project.version@
+  name: @project.artifactId@
+
+# Apollo配置开始应用全局唯一的身份标识
+app:
+  id: test
+# Apollo Meta Server 地址
+apollo:
+  meta: http://47.98.183.90:8080
+# 自定义本地配置文件缓存路径
+  cacheDir: ./config
+# 设置在应用启动阶段就加载 Apollo 配置
+  bootstrap:
+    enabled: true
+# 注入 application namespace
+    namespaces: application
+
+spring:
+  # 注册当前服务到AdminUI-Server服务中
+  boot:
+    admin:
+      client:
+        url: http://127.0.0.1:8082
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+      - id: limit_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+        filters:
+        - name: RateLimiter
+          args:
+            key-resolver: '#{@hostAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 20
+            redis-rate-limiter.burstCapacity: 40
+  # reids 配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+#    password: 123456
+    timeout: 5000
+    # redis连接池
+    lettuce:
+      pool:
+        maxIdle: 20
+        minIdle: 0
+        maxActive: 10
+        maxWait: 5000
+# actuator 监控项
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+# 断路器
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+# LB 配置
+ribbon:
+  ServerListRefreshInterval: 1000
+  OkToRetryOnAllOperations: true
+  MaxAutoRetriesNextServer: 3
+  MaxAutoRetries: 1
+  ReadTimeout: 5000
+  ConnectTimeout: 3000
+  retryableStatusCodes: 404,500,503
