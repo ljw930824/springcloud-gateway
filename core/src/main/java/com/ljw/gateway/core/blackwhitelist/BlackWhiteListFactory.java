@@ -1,9 +1,13 @@
 package com.ljw.gateway.core.blackwhitelist;
 
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 /**
@@ -19,12 +23,13 @@ import java.util.regex.Pattern;
  * 192.168.100.50-192.168.199.50: 192.168.1*.50<br>
  */
 @Component
+@Slf4j
 public class BlackWhiteListFactory implements BlackWhiteList {
 
     /**
      * 允许的IP访问列表
      */
-    public Map<BlackWhiteListType, Set<String>> ipFilterMap = Maps.newHashMap();
+    private Map<BlackWhiteListType, Vector<String>> ipFilterMap = Maps.newConcurrentMap();
 
     /**
      * IP的正则
@@ -36,9 +41,8 @@ public class BlackWhiteListFactory implements BlackWhiteList {
                     + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})");
 
     @Override
-    public void setBlackWhiteIPs(Map<BlackWhiteListType, String> blackWhiteIPs) {
+    public synchronized void setBlackWhiteIPs(Map<BlackWhiteListType, String> blackWhiteIPs) {
         ipFilterMap.clear();
-
         for (Map.Entry<BlackWhiteListType, String> bwIP : blackWhiteIPs
                 .entrySet()) {
             // 192.168.0.*转换为192.168.0.1-192.168.0.255
@@ -81,9 +85,9 @@ public class BlackWhiteListFactory implements BlackWhiteList {
                                 + endIP.toString().replace("[*]",
                                 s.split(";")[1]);
                         if (validate(ip)) {
-                            Set<String> ipList = ipFilterMap.get(bwIP.getKey());
+                            Vector<String> ipList = ipFilterMap.get(bwIP.getKey());
                             if (ipList == null || ipList.isEmpty()) {
-                                ipList = new HashSet<String>();
+                                ipList = new Vector<>();
                             }
                             ipList.add(ip);
                             ipFilterMap.put(bwIP.getKey(), ipList);
@@ -91,9 +95,9 @@ public class BlackWhiteListFactory implements BlackWhiteList {
                     }
                 } else {
                     if (validate(allow)) {
-                        Set<String> ipList = ipFilterMap.get(bwIP.getKey());
+                        Vector<String> ipList = ipFilterMap.get(bwIP.getKey());
                         if (ipList == null || ipList.isEmpty()) {
-                            ipList = new HashSet<String>();
+                            ipList = new Vector<>();
                         }
                         ipList.add(allow);
                         ipFilterMap.put(bwIP.getKey(), ipList);
@@ -105,7 +109,7 @@ public class BlackWhiteListFactory implements BlackWhiteList {
 
     @Override
     public boolean check(BlackWhiteListType blackWhiteIPListType, String ip) {
-        Set<String> ipList = ipFilterMap.get(blackWhiteIPListType);
+        Vector<String> ipList = ipFilterMap.get(blackWhiteIPListType);
         if (ipList == null || ipList.isEmpty() || ipList.contains(ip)) {
             if (BlackWhiteListType.BLACKLIST == blackWhiteIPListType) {
                 return false;
@@ -117,8 +121,9 @@ public class BlackWhiteListFactory implements BlackWhiteList {
         } else {
             for (String allow : ipList) {
                 if (allow.indexOf("-") > -1) {
-                    String[] from = allow.split("-")[0].split("\\.");
-                    String[] end = allow.split("-")[1].split("\\.");
+                    String allowTemp = allow;
+                    String[] from = allowTemp.split("-")[0].split("\\.");
+                    String[] end = allowTemp.split("-")[1].split("\\.");
                     String[] tag = ip.split("\\.");
 
                     // 对IP从左到右进行逐段匹配

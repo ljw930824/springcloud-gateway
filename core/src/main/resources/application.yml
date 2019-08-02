@@ -42,12 +42,12 @@ spring:
         uri: http://httpbin.org:80/get
         predicates:
         - After=2017-01-20T17:42:47.789-07:00[America/Denver]
-        filters:
-        - name: RateLimiter
-          args:
-            key-resolver: '#{@hostAddrKeyResolver}'
-            redis-rate-limiter.replenishRate: 20
-            redis-rate-limiter.burstCapacity: 40
+#        filters:
+#        - name: RateLimiter
+#          args:
+#            key-resolver: '#{@hostAddrKeyResolver}'
+#            redis-rate-limiter.replenishRate: 20
+#            redis-rate-limiter.burstCapacity: 40
   # reids 配置
   redis:
     host: 127.0.0.1
