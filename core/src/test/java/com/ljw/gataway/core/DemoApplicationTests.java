@@ -2,8 +2,8 @@ package com.ljw.gataway.core;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
-import com.ljw.gateway.core.Bootstrap;
-import com.ljw.gateway.core.redis.RedisService;
+import com.ljw.gateway.Bootstrap;
+import com.ljw.gateway.redis.RedisService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

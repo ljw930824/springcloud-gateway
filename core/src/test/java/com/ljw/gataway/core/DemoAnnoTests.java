@@ -1,7 +1,7 @@
 package com.ljw.gataway.core;
 
-import com.ljw.gateway.core.anno.ProcessReflect;
-import com.ljw.gateway.core.anno.Reflect;
+import com.ljw.gateway.anno.ProcessReflect;
+import com.ljw.gateway.anno.Reflect;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
