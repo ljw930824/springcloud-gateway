@@ -10,6 +10,8 @@ public final class ApolloConsts {
 
     public static final String BLACKLIST = "blacklist";
 
+    public static final String DYNAMICROUTE = "dynamicroute";
+
 
     private ApolloConsts() {
     }

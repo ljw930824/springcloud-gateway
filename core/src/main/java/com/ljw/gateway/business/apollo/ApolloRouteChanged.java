@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.stereotype.Component;
 
-import static com.ljw.gateway.common.constants.RedisKeyConsts.BLACKLIST_IP_KEY;
-import static com.ljw.gateway.common.constants.RedisKeyConsts.BLACKLIST_IP_KEY_OLD;
+import static com.ljw.gateway.common.constants.RedisKeyConsts.DYNAMIC_ROUTE_KEY;
+import static com.ljw.gateway.common.constants.RedisKeyConsts.DYNAMIC_ROUTE_KEY_OLD;
 
 
 /**
@@ -24,7 +24,7 @@ import static com.ljw.gateway.common.constants.RedisKeyConsts.BLACKLIST_IP_KEY_O
  **/
 @Component
 @Slf4j
-public class ApolloIpBlackListChanged extends AbstractTemplateService {
+public class ApolloRouteChanged extends AbstractTemplateService {
 
     @Autowired
     private RedisService redisService;
@@ -34,8 +34,8 @@ public class ApolloIpBlackListChanged extends AbstractTemplateService {
     public void doCheck(ConfigChangeEvent changeEvent) {
         for (String key : changeEvent.changedKeys()) {
             ConfigChange change = changeEvent.getChange(key);
-            if (ApolloConsts.BLACKLIST.equals(change.getPropertyName())) {
-                log.info("Found change TEST1.123.blacklist - {}", change.toString());
+            if (change.getPropertyName().contains(ApolloConsts.DYNAMICROUTE)) {
+                log.info("Found change TEST1.123.DYNAMIC_ROUTE - {}", change.toString());
             }
         }
         this.doChangeHandler(changeEvent);
@@ -47,17 +47,15 @@ public class ApolloIpBlackListChanged extends AbstractTemplateService {
     public void doChangeHandler(ConfigChangeEvent changeEvent) {
         /** 生产环境尽量避免keys操作，很容易造成缓存穿透 **/
 //        Set<String> keys = redisTemplate.keys(BLACKLIST_IP_KEY + StringConsts.COLON + "*");
-//        redisService.delete(BLACKLIST_IP_KEY);
-//        log.info("ApolloBlackWhiteListChanged ------ all blackList delete in Redis");
         for (String key : changeEvent.changedKeys()) {
             ConfigChange change = changeEvent.getChange(key);
-            if (ApolloConsts.BLACKLIST.equals(change.getPropertyName())) {
+            if (change.getPropertyName().contains(ApolloConsts.DYNAMICROUTE)) {
                 String newValue = change.getNewValue();
                 String oldValue = change.getOldValue();
-                redisService.valueSet(BLACKLIST_IP_KEY, newValue);
-                redisService.valueSet(BLACKLIST_IP_KEY_OLD, oldValue);
-                log.info("blackList new Value into Redis  - {}", newValue);
-                log.info("blackList old Value into Redis  - {}", oldValue);
+                redisService.valueSet(DYNAMIC_ROUTE_KEY, newValue);
+                redisService.valueSet(DYNAMIC_ROUTE_KEY_OLD, oldValue);
+                log.info("DYNAMIC_ROUTE new Value into Redis  - {}", newValue);
+                log.info("DYNAMIC_ROUTE old Value into Redis  - {}", oldValue);
             }
         }
     }
