@@ -18,7 +18,7 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
 
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-    private static final ThreadLocal<Kryo> kryos = ThreadLocal.withInitial(Kryo::new);
+    private static final ThreadLocal<Kryo> KRYO_THREAD_LOCAL = ThreadLocal.withInitial(Kryo::new);
 
     private Class<T> clazz;
 
@@ -32,7 +32,7 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
         if (t == null) {
             return EMPTY_BYTE_ARRAY;
         }
-        Kryo kryo = kryos.get();
+        Kryo kryo = KRYO_THREAD_LOCAL.get();
         kryo.setReferences(false);
         kryo.register(clazz);
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -51,11 +51,9 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
         if (bytes == null || bytes.length <= 0) {
             return null;
         }
-
-        Kryo kryo = kryos.get();
+        Kryo kryo = KRYO_THREAD_LOCAL.get();
         kryo.setReferences(false);
         kryo.register(clazz);
-
         try (Input input = new Input(bytes)) {
             return (T) kryo.readClassAndObject(input);
         } catch (Exception e) {

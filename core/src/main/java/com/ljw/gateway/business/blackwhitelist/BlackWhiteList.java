@@ -12,16 +12,16 @@ public interface BlackWhiteList {
     /**
      * 设置更新数据
      *
-     * @param blackWhiteIPs
+     * @param blackWhiteListTypeStringMap
      */
-    void setBlackWhiteIPs(Map<BlackWhiteListType, String> blackWhiteIPs);
+    void setBlackWhiteIPs(Map<BlackWhiteListType, String> blackWhiteListTypeStringMap);
 
     /**
      * 校验黑白IP
      *
-     * @param blackWhiteIPListType
+     * @param blackWhiteListType
      * @param ip
      * @return
      */
-    boolean check(BlackWhiteListType blackWhiteIPListType, String ip);
+    boolean check(BlackWhiteListType blackWhiteListType, String ip);
 }

@@ -7,6 +7,7 @@ package com.ljw.gateway.common.constants;
  * @Date: 2019/7/30 14:21
  **/
 public final class StringConsts {
+    public static final String OKAY = "OK";
     public static final String UTF8 = "utf-8";
     public static final String VERTICAL_BAR = "|";
     public static final String DOT = ".";

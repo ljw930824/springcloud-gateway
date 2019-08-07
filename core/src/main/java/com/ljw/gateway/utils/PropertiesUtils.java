@@ -11,15 +11,15 @@ import java.util.Properties;
 public class PropertiesUtils {
 
     public static final String COMMON = "application";
-    public static final Properties properties = new Properties();
+    public static final Properties PROPERTIES = new Properties();
 
     public String getString(String key) {
-        return properties.getProperty(key);
+        return PROPERTIES.getProperty(key);
     }
 
     public Integer getInteger(String key) {
         try {
-            return Integer.parseInt(properties.getProperty(key));
+            return Integer.parseInt(PROPERTIES.getProperty(key));
         } catch (Exception e) {
             return null;
         }
@@ -27,7 +27,7 @@ public class PropertiesUtils {
 
     public Long getLong(String key) {
         try {
-            return Long.parseLong(properties.getProperty(key));
+            return Long.parseLong(PROPERTIES.getProperty(key));
         } catch (Exception e) {
             return null;
         }
@@ -35,7 +35,7 @@ public class PropertiesUtils {
 
     public Boolean getBoolean(String key) {
         try {
-            return Boolean.parseBoolean(properties.getProperty(key));
+            return Boolean.parseBoolean(PROPERTIES.getProperty(key));
         } catch (Exception e) {
             return null;
         }

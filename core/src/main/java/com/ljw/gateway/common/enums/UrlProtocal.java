@@ -7,5 +7,5 @@ package com.ljw.gateway.common.enums;
  * @Date: 2019/7/30 14:19
  **/
 public enum UrlProtocal {
-    HTTP, HTTPS;
+    LB, HTTP, HTTPS;
 }

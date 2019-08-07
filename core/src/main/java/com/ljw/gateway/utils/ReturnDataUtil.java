@@ -6,24 +6,25 @@ import com.ljw.gateway.common.model.ReturnData;
 import org.springframework.util.StringUtils;
 
 /**
- * @author : Imaginary
- * @version : V1.0
- * @date : 2018/9/6 21:53
- */
+ * @ClassName: PropertiesUtils
+ * @Description: TODO
+ * @Author: ljw
+ * @Date: 2019/7/30 16:21
+ **/
 public class ReturnDataUtil<T> {
 
-    private static final JSONObject defaultData = new JSONObject();
+    private static final JSONObject JSON_OBJECT = new JSONObject();
 
     public static boolean isSuccess(ReturnData returnData) {
         return returnData != null && HttpCode.OK.getCode() == returnData.getCode();
     }
 
     public static ReturnData getReturn(int code, String msg) {
-        return getReturn(code, msg, defaultData);
+        return getReturn(code, msg, JSON_OBJECT);
     }
 
     public static ReturnData getReturn(HttpCode httpCode) {
-        return getReturn(httpCode.getCode(), httpCode.getDesc(), defaultData);
+        return getReturn(httpCode.getCode(), httpCode.getDesc(), JSON_OBJECT);
     }
 
     public static <T> ReturnData getReturn(int code, String msg, T data) {
@@ -41,7 +42,7 @@ public class ReturnDataUtil<T> {
             result.put(name, data);
             returnData.setData(result);
         } else {
-            returnData.setData(data == null ? defaultData : data);
+            returnData.setData(data == null ? JSON_OBJECT : data);
         }
         return returnData;
     }
@@ -51,7 +52,7 @@ public class ReturnDataUtil<T> {
         if (data != null) {
             returnData.setData(data);
         } else {
-            returnData.setData(defaultData);
+            returnData.setData(JSON_OBJECT);
         }
         return returnData;
     }

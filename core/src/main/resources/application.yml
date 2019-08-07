@@ -29,6 +29,12 @@ spring:
     admin:
       client:
         url: http://127.0.0.1:8082
+        instance:
+          metadata:
+            user.name: admin
+            user.password: admin
+        username: admin
+        password: admin
   cloud:
     loadbalancer:
       retry:

@@ -35,10 +35,10 @@ public class InitApolloConfigure implements CommandLineRunner {
         Set<String> configs = config.getPropertyNames();
         if (configs != null && !configs.isEmpty()) {
             configs.forEach(key -> {
-                PropertiesUtils.properties.setProperty(key, config.getProperty(key, null));
+                PropertiesUtils.PROPERTIES.setProperty(key, config.getProperty(key, null));
             });
             //监听app.id中的key发生变化后就改变其值
-            ApolloConfigurationChange.monitorApolloConfigurationChange(PropertiesUtils.properties, config);
+            ApolloConfigurationChange.monitorApolloConfigurationChange(PropertiesUtils.PROPERTIES, config);
         }
     }
 
@@ -49,10 +49,10 @@ public class InitApolloConfigure implements CommandLineRunner {
         Config commonConfig = ConfigService.getConfig(PropertiesUtils.COMMON);
         if (commonConfig != null) {
             for (String key : commonConfig.getPropertyNames()) {
-                PropertiesUtils.properties.setProperty(key, commonConfig.getProperty(key, null));
+                PropertiesUtils.PROPERTIES.setProperty(key, commonConfig.getProperty(key, null));
             }
             //监听app.id中的key发生变化后就改变其值
-            ApolloConfigurationChange.monitorApolloConfigurationChange(PropertiesUtils.properties, config);
+            ApolloConfigurationChange.monitorApolloConfigurationChange(PropertiesUtils.PROPERTIES, config);
         }
     }
 }

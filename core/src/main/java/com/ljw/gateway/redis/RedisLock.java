@@ -1,5 +1,6 @@
 package com.ljw.gateway.redis;
 
+import com.ljw.gateway.common.constants.StringConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -29,7 +30,7 @@ public class RedisLock implements VariableKeyLock {
     @Autowired
     private RedisConnectionFactory factory;
 
-    private ThreadLocal<String> localValue = new ThreadLocal<String>();
+    private ThreadLocal<String> localValue = new ThreadLocal<>();
 
     /**
      * 解锁lua脚本
@@ -69,13 +70,14 @@ public class RedisLock implements VariableKeyLock {
             String value = UUID.randomUUID().toString();
             localValue.set(value);
             String ret = jedis.set(LOCK, value, "NX", "PX", 10000);
-            return ret != null && ret.equals("OK");
+            return ret != null && StringConsts.OKAY.equals(ret);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
             if (connection != null) {
                 connection.close();
             }
+            remove();
         }
         return false;
     }
@@ -89,13 +91,14 @@ public class RedisLock implements VariableKeyLock {
             String value = UUID.randomUUID().toString();
             localValue.set(value);
             String ret = jedis.set(key, value, "NX", "PX", 10000);
-            return ret != null && ret.equals("OK");
+            return ret != null && StringConsts.OKAY.equals(ret);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
             if (connection != null) {
                 connection.close();
             }
+            remove();
         }
         return false;
     }
@@ -112,13 +115,13 @@ public class RedisLock implements VariableKeyLock {
             } else if (jedis instanceof JedisCluster) {
                 ((JedisCluster) jedis).eval(script, Arrays.asList(LOCK), Arrays.asList(localValue.get()));
             }
-
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
             if (connection != null) {
                 connection.close();
             }
+            remove();
         }
 
     }
@@ -141,6 +144,7 @@ public class RedisLock implements VariableKeyLock {
             if (connection != null) {
                 connection.close();
             }
+            remove();
         }
     }
 
@@ -158,6 +162,10 @@ public class RedisLock implements VariableKeyLock {
     @Override
     public Condition newCondition() {
         return null;
+    }
+
+    private void remove(){
+        localValue.remove();
     }
 
 }

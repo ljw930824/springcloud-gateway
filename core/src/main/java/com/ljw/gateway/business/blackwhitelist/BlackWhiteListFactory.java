@@ -1,6 +1,7 @@
 package com.ljw.gateway.business.blackwhitelist;
 
 import com.google.common.collect.Maps;
+import com.ljw.gateway.common.constants.StringConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -41,13 +42,13 @@ public class BlackWhiteListFactory implements BlackWhiteList {
                     + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})");
 
     @Override
-    public synchronized void setBlackWhiteIPs(Map<BlackWhiteListType, String> blackWhiteIPs) {
+    public synchronized void setBlackWhiteIPs(Map<BlackWhiteListType, String> blackWhiteListTypeStringMap) {
         ipFilterMap.clear();
-        for (Map.Entry<BlackWhiteListType, String> bwIP : blackWhiteIPs
+        for (Map.Entry<BlackWhiteListType, String> bwIP : blackWhiteListTypeStringMap
                 .entrySet()) {
             // 192.168.0.*转换为192.168.0.1-192.168.0.255
             for (String allow : bwIP.getValue().replaceAll("\\s", "")
-                    .split(";")) {
+                    .split(StringConsts.SEMICOLON)) {
                 if (allow.indexOf("*") > -1) {
                     String[] ips = allow.split("\\.");
                     String[] from = new String[]{"0", "0", "0", "0"};
@@ -108,12 +109,12 @@ public class BlackWhiteListFactory implements BlackWhiteList {
     }
 
     @Override
-    public boolean check(BlackWhiteListType blackWhiteIPListType, String ip) {
-        Vector<String> ipList = ipFilterMap.get(blackWhiteIPListType);
+    public boolean check(BlackWhiteListType blackWhiteListType, String ip) {
+        Vector<String> ipList = ipFilterMap.get(blackWhiteListType);
         if (ipList == null || ipList.isEmpty() || ipList.contains(ip)) {
-            if (BlackWhiteListType.BLACKLIST == blackWhiteIPListType) {
+            if (BlackWhiteListType.BLACKLIST == blackWhiteListType) {
                 return false;
-            } else if (BlackWhiteListType.WHITELIST == blackWhiteIPListType) {
+            } else if (BlackWhiteListType.WHITELIST == blackWhiteListType) {
                 return true;
             } else {
                 throw new RuntimeException("非法类型");
@@ -202,7 +203,7 @@ public class BlackWhiteListFactory implements BlackWhiteList {
      * @return
      */
     private boolean validate(String ip) {
-        for (String s : ip.split("-")) {
+        for (String s : ip.split(StringConsts.HIPHEN)) {
             if (!pattern.matcher(s).matches()) {
                 return false;
             }
