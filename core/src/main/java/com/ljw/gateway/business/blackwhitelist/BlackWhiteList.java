@@ -10,7 +10,7 @@ import java.util.Map;
  **/
 public interface BlackWhiteList {
     /**
-     * 设置更新数据
+     * 设置黑名单数据
      *
      * @param blackWhiteListTypeStringMap
      */
