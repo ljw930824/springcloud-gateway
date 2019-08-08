@@ -1,11 +1,11 @@
 package com.ljw.gateway.business.blackwhitelist;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ljw.gateway.common.constants.StringConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -35,7 +35,7 @@ public class BlackWhiteListFactory implements BlackWhiteList {
     /**
      * IP的正则
      */
-    public static Pattern pattern = Pattern
+    public final static Pattern pattern = Pattern
             .compile("(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\."
                     + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\."
                     + "(1\\d{1,2}|2[0-4]\\d|25[0-5]|\\d{1,2})\\."
@@ -49,13 +49,13 @@ public class BlackWhiteListFactory implements BlackWhiteList {
             // 192.168.0.*转换为192.168.0.1-192.168.0.255
             for (String allow : bwIP.getValue().replaceAll("\\s", "")
                     .split(StringConsts.SEMICOLON)) {
-                if (allow.indexOf("*") > -1) {
+                if (allow.indexOf(StringConsts.ASTERISK) > -1) {
                     String[] ips = allow.split("\\.");
                     String[] from = new String[]{"0", "0", "0", "0"};
                     String[] end = new String[]{"255", "255", "255", "255"};
-                    List<String> tem = new ArrayList<String>();
+                    List<String> tem = Lists.newArrayList();
                     for (int i = 0; i < ips.length; i++) {
-                        if (ips[i].indexOf("*") > -1) {
+                        if (ips[i].indexOf(StringConsts.ASTERISK) > -1) {
                             tem = complete(ips[i]);
                             from[i] = null;
                             end[i] = null;
@@ -65,12 +65,12 @@ public class BlackWhiteListFactory implements BlackWhiteList {
                         }
                     }
 
-                    StringBuffer fromIP = new StringBuffer();
-                    StringBuffer endIP = new StringBuffer();
+                    StringBuilder fromIP = new StringBuilder();
+                    StringBuilder endIP = new StringBuilder();
                     for (int i = 0; i < 4; i++) {
                         if (from[i] != null) {
-                            fromIP.append(from[i]).append(".");
-                            endIP.append(end[i]).append(".");
+                            fromIP.append(from[i]).append(StringConsts.DOT);
+                            endIP.append(end[i]).append(StringConsts.DOT);
                         } else {
                             fromIP.append("[*].");
                             endIP.append("[*].");
@@ -81,10 +81,10 @@ public class BlackWhiteListFactory implements BlackWhiteList {
 
                     for (String s : tem) {
                         String ip = fromIP.toString().replace("[*]",
-                                s.split(";")[0])
+                                s.split(StringConsts.SEMICOLON)[0])
                                 + "-"
                                 + endIP.toString().replace("[*]",
-                                s.split(";")[1]);
+                                s.split(StringConsts.SEMICOLON)[1]);
                         if (validate(ip)) {
                             Vector<String> ipList = ipFilterMap.get(bwIP.getKey());
                             if (ipList == null || ipList.isEmpty()) {
@@ -121,10 +121,10 @@ public class BlackWhiteListFactory implements BlackWhiteList {
             }
         } else {
             for (String allow : ipList) {
-                if (allow.indexOf("-") > -1) {
+                if (allow.indexOf(StringConsts.HIPHEN) > -1) {
                     String allowTemp = allow;
-                    String[] from = allowTemp.split("-")[0].split("\\.");
-                    String[] end = allowTemp.split("-")[1].split("\\.");
+                    String[] from = allowTemp.split(StringConsts.HIPHEN)[0].split("\\.");
+                    String[] end = allowTemp.split(StringConsts.HIPHEN)[1].split("\\.");
                     String[] tag = ip.split("\\.");
 
                     // 对IP从左到右进行逐段匹配
@@ -154,7 +154,7 @@ public class BlackWhiteListFactory implements BlackWhiteList {
      * @return 返回限定后的IP范围，格式为List[10;19, 100;199]
      */
     private List<String> complete(String arg) {
-        List<String> com = new ArrayList<String>();
+        List<String> com = Lists.newArrayList();
         if (arg.length() == 1) {
             com.add("0;255");
         } else if (arg.length() == 2) {

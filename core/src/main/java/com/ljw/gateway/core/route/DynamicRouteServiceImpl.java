@@ -23,9 +23,10 @@ import reactor.core.publisher.Mono;
  * @version 1.0<br />
  */
 public class DynamicRouteServiceImpl implements ApplicationEventPublisherAware {
+
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-
+        //
     }
 
     @Autowired

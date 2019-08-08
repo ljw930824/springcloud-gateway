@@ -25,7 +25,7 @@ import java.util.concurrent.locks.Condition;
 @Slf4j
 public class RedisLock implements VariableKeyLock {
 
-    public static final String LOCK = "LOCK";
+    public static final String REDIS_LOCK = "LOCK";
 
     @Autowired
     private RedisConnectionFactory factory;
@@ -41,9 +41,10 @@ public class RedisLock implements VariableKeyLock {
     public void lock() {
         if (!tryLock()) {
             try {
-                Thread.sleep(new Random().nextInt(10) + 1);
+                Thread.sleep(new Random().nextInt(10) + 1L);
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
+                Thread.currentThread().interrupt();
             }
             lock();
         }
@@ -53,9 +54,10 @@ public class RedisLock implements VariableKeyLock {
     public void lock(String key) {
         if (!tryLock(key)) {
             try {
-                Thread.sleep(new Random().nextInt(10) + 1);
+                Thread.sleep(new Random().nextInt(10) + 1L);
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
+                Thread.currentThread().interrupt();
             }
             lock(key);
         }
@@ -69,7 +71,7 @@ public class RedisLock implements VariableKeyLock {
             Jedis jedis = (Jedis) connection.getNativeConnection();
             String value = UUID.randomUUID().toString();
             localValue.set(value);
-            String ret = jedis.set(LOCK, value, "NX", "PX", 10000);
+            String ret = jedis.set(REDIS_LOCK, value, "NX", "PX", 10000);
             return ret != null && StringConsts.OKAY.equals(ret);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -111,9 +113,9 @@ public class RedisLock implements VariableKeyLock {
             connection = factory.getConnection();
             Object jedis = connection.getNativeConnection();
             if (jedis instanceof Jedis) {
-                ((Jedis) jedis).eval(script, Arrays.asList(LOCK), Arrays.asList(localValue.get()));
+                ((Jedis) jedis).eval(script, Arrays.asList(REDIS_LOCK), Arrays.asList(localValue.get()));
             } else if (jedis instanceof JedisCluster) {
-                ((JedisCluster) jedis).eval(script, Arrays.asList(LOCK), Arrays.asList(localValue.get()));
+                ((JedisCluster) jedis).eval(script, Arrays.asList(REDIS_LOCK), Arrays.asList(localValue.get()));
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -152,6 +154,7 @@ public class RedisLock implements VariableKeyLock {
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
+        // 暂时使用不到
     }
 
     @Override
@@ -164,7 +167,7 @@ public class RedisLock implements VariableKeyLock {
         return null;
     }
 
-    private void remove(){
+    private void remove() {
         localValue.remove();
     }
 

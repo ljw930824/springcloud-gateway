@@ -15,19 +15,19 @@ import org.springframework.stereotype.Component;
 @Component
 public abstract class AbstractTemplateService implements ITemplateService, ApplicationContextAware {
 
-	public ApplicationContext applicationContext;
+    public ApplicationContext applicationContext;
 
     @Override
     public void doTemplate(ConfigChangeEvent changeEvent) {
-		// 注入监听
-		doCheck(changeEvent);
-		// 处理变化
-		doChangeHandler(changeEvent);
+        // 监听
+        doCheck(changeEvent);
+        // 处理变化
+        doChangeHandler(changeEvent);
     }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
 }

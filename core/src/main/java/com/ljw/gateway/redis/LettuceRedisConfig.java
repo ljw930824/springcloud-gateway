@@ -24,7 +24,7 @@ import java.time.Duration;
  * @Date: 2019/7/30 14:21
  **/
 @Configuration
-public class RedisConfig {
+public class LettuceRedisConfig {
 
     @Value("${spring.redis.database}")
     private int database;

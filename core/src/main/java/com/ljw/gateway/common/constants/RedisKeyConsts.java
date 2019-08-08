@@ -7,6 +7,11 @@ package com.ljw.gateway.common.constants;
  * @Date: 2019/7/30 14:21
  **/
 public class RedisKeyConsts {
+
+    private RedisKeyConsts() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final String BLACKLIST_IP_KEY = "blacklist_ip";
     public static final String BLACKLIST_IP_KEY_OLD = "blacklist_ip_old";
     public static final String DYNAMIC_ROUTE_KEY = "dynamic_route";

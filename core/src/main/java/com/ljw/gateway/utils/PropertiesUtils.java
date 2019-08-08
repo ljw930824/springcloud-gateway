@@ -4,7 +4,7 @@ import java.util.Properties;
 
 /**
  * @ClassName: PropertiesUtils
- * @Description: TODO
+ * @Description: PropertiesUtils
  * @Author: ljw
  * @Date: 2019/7/30 16:21
  **/

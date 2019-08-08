@@ -6,12 +6,16 @@ import com.ljw.gateway.common.model.ReturnData;
 import org.springframework.util.StringUtils;
 
 /**
- * @ClassName: PropertiesUtils
- * @Description: TODO
+ * @ClassName: ReturnDataUtil
+ * @Description: ReturnDataUtil
  * @Author: ljw
  * @Date: 2019/7/30 16:21
  **/
 public class ReturnDataUtil<T> {
+
+    private ReturnDataUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final JSONObject JSON_OBJECT = new JSONObject();
 

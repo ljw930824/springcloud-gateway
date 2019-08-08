@@ -2,7 +2,7 @@ package com.ljw.gateway.common.enums;
 
 /**
  * @ClassName: HttpCode
- * @Description: TODO
+ * @Description: HTTP状态枚举
  * @Author: ljw
  * @Date: 2019/7/30 14:19
  **/

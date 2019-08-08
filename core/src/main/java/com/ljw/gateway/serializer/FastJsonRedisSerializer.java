@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 
 /**
  * @ClassName: FastJsonRedisSerializer
- * @Description: TODO
+ * @Description: FastJsonRedisSerializer
  * @Author: ljw
  * @Date: 2019/7/4 11:28
  **/

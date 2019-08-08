@@ -47,8 +47,6 @@ public class ApolloIpBlackListChanged extends AbstractTemplateService {
     public void doChangeHandler(ConfigChangeEvent changeEvent) {
         /** 生产环境尽量避免keys操作，很容易造成缓存穿透 **/
 //        Set<String> keys = redisTemplate.keys(BLACKLIST_IP_KEY + StringConsts.COLON + "*");
-//        redisService.delete(BLACKLIST_IP_KEY);
-//        log.info("ApolloBlackWhiteListChanged ------ all blackList delete in Redis");
         for (String key : changeEvent.changedKeys()) {
             ConfigChange change = changeEvent.getChange(key);
             if (ApolloConsts.BLACKLIST.equals(change.getPropertyName())) {

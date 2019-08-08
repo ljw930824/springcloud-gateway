@@ -1,5 +1,6 @@
 package com.ljw.gateway.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.text.ParseException;
@@ -8,17 +9,22 @@ import java.util.Date;
 
 /**
  * @ClassName: DateUtil
- * @Description: TODO
+ * @Description: DateUtil
  * @Author: ljw
  * @Date: 2019/7/30 14:21
  **/
+@Slf4j
 public class DateUtil {
 
-    public static FastDateFormat ymdhms = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
-    public static FastDateFormat ymd = FastDateFormat.getInstance("yyyy-MM-dd");
-    public static FastDateFormat ymdhdsNoPadding = FastDateFormat.getInstance("yyyyMMddHHmmss");
-    public static FastDateFormat ymdNoPadding = FastDateFormat.getInstance("yyyyMMdd");
-    public static FastDateFormat ymdhm = FastDateFormat.getInstance("yyyyMMdd-HHmm");
+    private DateUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static final FastDateFormat ymdhms = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+    public static final FastDateFormat ymd = FastDateFormat.getInstance("yyyy-MM-dd");
+    public static final FastDateFormat ymdhdsNoPadding = FastDateFormat.getInstance("yyyyMMddHHmmss");
+    public static final FastDateFormat ymdNoPadding = FastDateFormat.getInstance("yyyyMMdd");
+    public static final FastDateFormat ymdhm = FastDateFormat.getInstance("yyyyMMdd-HHmm");
 
     public static String format() {
         return ymd.format(System.currentTimeMillis());
@@ -37,6 +43,7 @@ public class DateUtil {
         try {
             date = ymd.parse(dateStr);
         } catch (ParseException e) {
+            log.error(e.getMessage());
         }
         return date;
     }
@@ -46,6 +53,7 @@ public class DateUtil {
         try {
             date = ymdhms.parse(dateStr);
         } catch (ParseException e) {
+            log.error(e.getMessage());
         }
         return date;
     }
@@ -56,6 +64,7 @@ public class DateUtil {
         try {
             date = fastDateFormat.parse(dateStr);
         } catch (ParseException e) {
+            log.error(e.getMessage());
         }
         return date;
     }
@@ -120,7 +129,7 @@ public class DateUtil {
         try {
             between = start - end;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage());
         }
         long day = between / (24 * 60 * 60 * 1000);
         long hour = (between / (60 * 60 * 1000) - day * 24);
@@ -189,7 +198,7 @@ public class DateUtil {
             String todayStr = ymdStr + " 00:00:00";
             return ymdhms.parse(todayStr);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return null;
     }
@@ -223,7 +232,7 @@ public class DateUtil {
             Date afterDate = ymd.parse(afterYmd);
             return (afterDate.getTime() - preDate.getTime()) / (1000 * 3600 * 24);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return 0;
     }

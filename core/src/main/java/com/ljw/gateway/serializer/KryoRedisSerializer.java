@@ -3,6 +3,7 @@ package com.ljw.gateway.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
@@ -10,10 +11,11 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * @ClassName: KryoRedisSerializer
- * @Description: TODO
+ * @Description: KryoRedisSerializer
  * @Author: ljw
  * @Date: 2019/7/4 11:43
  **/
+@Slf4j
 public class KryoRedisSerializer<T> implements RedisSerializer<T> {
 
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
@@ -41,7 +43,7 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
             output.flush();
             return baos.toByteArray();
         } catch (Exception e) {
-
+            log.error(e.getMessage());
         }
         return EMPTY_BYTE_ARRAY;
     }
@@ -57,7 +59,7 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
         try (Input input = new Input(bytes)) {
             return (T) kryo.readClassAndObject(input);
         } catch (Exception e) {
-
+            log.error(e.getMessage());
         }
         return null;
     }

@@ -15,26 +15,24 @@ app:
 # Apollo Meta Server 地址
 apollo:
   meta: http://47.98.183.90:8080
-# 自定义本地配置文件缓存路径
+  # 自定义本地配置文件缓存路径
   cacheDir: ./config
-# 设置在应用启动阶段就加载 Apollo 配置
+  # 设置在应用启动阶段就加载 Apollo 配置
   bootstrap:
     enabled: true
-# 注入 application namespace
+    # 注入 application namespace
     namespaces: application
 
+
 spring:
-  # 注册当前服务到AdminUI-Server服务中
+  application:
+    name: spring-cloud-gateway-core
   boot:
     admin:
       client:
-        url: http://127.0.0.1:8082
-        instance:
-          metadata:
-            user.name: admin
-            user.password: admin
-        username: admin
-        password: admin
+        username: admin       #These two are needed so that the client
+        password: admin   #can register at the protected server api
+        url: http://localhost:8082
   cloud:
     loadbalancer:
       retry:
@@ -44,22 +42,22 @@ spring:
         locator:
           lower-case-service-id: true
       routes:
-      - id: limit_route
-        uri: http://httpbin.org:80/get
-        predicates:
-        - After=2017-01-20T17:42:47.789-07:00[America/Denver]
-#        filters:
-#        - name: RateLimiter
-#          args:
-#            key-resolver: '#{@hostAddrKeyResolver}'
-#            redis-rate-limiter.replenishRate: 20
-#            redis-rate-limiter.burstCapacity: 40
+        - id: limit_route
+          uri: http://httpbin.org:80/get
+          predicates:
+            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+  #        filters:
+  #        - name: RateLimiter
+  #          args:
+  #            key-resolver: '#{@hostAddrKeyResolver}'
+  #            redis-rate-limiter.replenishRate: 20
+  #            redis-rate-limiter.burstCapacity: 40
   # reids 配置
   redis:
     host: 127.0.0.1
     port: 6379
     database: 0
-#    password: 123456
+    #    password: 123456
     timeout: 5000
     # redis连接池
     lettuce:

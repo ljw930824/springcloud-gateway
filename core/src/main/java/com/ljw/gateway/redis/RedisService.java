@@ -40,7 +40,7 @@ public class RedisService {
             public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
                 List<String> returnValue = new ArrayList<>();
                 byte[][] argsArray = null;
-                if (args != null && args.size() > 0) {
+                if (args != null && !args.isEmpty()) {
                     argsArray = new byte[args.size()][];
                     for (int i = 0; i < args.size(); i++) {
                         argsArray[i] = args.get(i).getBytes();

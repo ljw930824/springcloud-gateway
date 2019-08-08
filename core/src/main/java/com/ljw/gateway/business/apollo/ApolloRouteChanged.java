@@ -52,8 +52,8 @@ public class ApolloRouteChanged extends AbstractTemplateService {
             if (change.getPropertyName().contains(ApolloConsts.DYNAMICROUTE)) {
                 String newValue = change.getNewValue();
                 String oldValue = change.getOldValue();
-                redisService.valueSet(DYNAMIC_ROUTE_KEY, newValue);
-                redisService.valueSet(DYNAMIC_ROUTE_KEY_OLD, oldValue);
+                redisService.hashPut(DYNAMIC_ROUTE_KEY, change.getPropertyName(), newValue);
+                redisService.hashPut(DYNAMIC_ROUTE_KEY_OLD, change.getPropertyName(), oldValue);
                 log.info("DYNAMIC_ROUTE new Value into Redis  - {}", newValue);
                 log.info("DYNAMIC_ROUTE old Value into Redis  - {}", oldValue);
             }

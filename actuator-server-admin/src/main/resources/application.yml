@@ -2,19 +2,27 @@ server:
   port: 8082
   use-forward-headers: true
 
+info:
+  version: @project.version@
+  name: @project.artifactId@
+
 spring:
-  boot:
-    admin:
-      monitor:
-        read-timeout: 20000
-      notify:
-        mail:
-          from: luojiawei0078@126.com
-          to: 584198437@qq.com
+  thymeleaf:
+    check-template-location: false
+  application:
+    name: spring-boot-admin-sample-servlet
   security:
     user:
       name: admin
       password: admin
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081
+        instance:
+          metadata:
+            user.name: ${spring.security.user.name}         #These two are needed so that the server
+            user.password: ${spring.security.user.password} #can access the protected client endpoints
   mail:
     host: smtp.126.com
     username: luojiawei0078@126.com
@@ -26,6 +34,11 @@ spring:
           starttls:
             enable: true
             required: true
-
-  thymeleaf:
-    check-template-location: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
