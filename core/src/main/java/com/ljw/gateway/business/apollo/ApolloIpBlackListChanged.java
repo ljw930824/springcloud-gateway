@@ -35,7 +35,7 @@ public class ApolloIpBlackListChanged extends AbstractTemplateService {
         for (String key : changeEvent.changedKeys()) {
             ConfigChange change = changeEvent.getChange(key);
             if (ApolloConsts.BLACKLIST.equals(change.getPropertyName())) {
-                log.info("Found change TEST1.123.blacklist - {}", change.toString());
+                log.info("监听到配置变化" + change.getNamespace() + " -> " + change.getPropertyName() + " - {}", change.toString());
             }
         }
         this.doChangeHandler(changeEvent);
@@ -54,8 +54,8 @@ public class ApolloIpBlackListChanged extends AbstractTemplateService {
                 String oldValue = change.getOldValue();
                 redisService.valueSet(BLACKLIST_IP_KEY, newValue);
                 redisService.valueSet(BLACKLIST_IP_KEY_OLD, oldValue);
-                log.info("blackList new Value into Redis  - {}", newValue);
-                log.info("blackList old Value into Redis  - {}", oldValue);
+                log.info("从Apollo读取黑名单新的数据已录入Redis  - {}", newValue);
+                log.info("从Apollo读取黑名单回滚数据已录入Redis  - {}", oldValue);
             }
         }
     }

@@ -1,15 +1,21 @@
 package com.ljw.gateway.business.apollo;
 
+import com.alibaba.fastjson.JSON;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
+import com.google.common.collect.Lists;
 import com.ljw.gateway.business.apollo.template.AbstractTemplateService;
 import com.ljw.gateway.common.constants.ApolloConsts;
+import com.ljw.gateway.core.route.DynamicRouteServiceImpl;
 import com.ljw.gateway.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
+import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.ljw.gateway.common.constants.RedisKeyConsts.DYNAMIC_ROUTE_KEY;
 import static com.ljw.gateway.common.constants.RedisKeyConsts.DYNAMIC_ROUTE_KEY_OLD;
@@ -29,13 +35,16 @@ public class ApolloRouteChanged extends AbstractTemplateService {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private DynamicRouteServiceImpl dynamicRouteService;
+
     @Override
     @ApolloConfigChangeListener("TEST1.123")
     public void doCheck(ConfigChangeEvent changeEvent) {
         for (String key : changeEvent.changedKeys()) {
             ConfigChange change = changeEvent.getChange(key);
             if (change.getPropertyName().contains(ApolloConsts.DYNAMICROUTE)) {
-                log.info("Found change TEST1.123.DYNAMIC_ROUTE - {}", change.toString());
+                log.info("监听到配置变化" + change.getNamespace() + " -> " + change.getPropertyName() + " - {}", change.toString());
             }
         }
         this.doChangeHandler(changeEvent);
@@ -45,8 +54,7 @@ public class ApolloRouteChanged extends AbstractTemplateService {
 
     @Override
     public void doChangeHandler(ConfigChangeEvent changeEvent) {
-        /** 生产环境尽量避免keys操作，很容易造成缓存穿透 **/
-//        Set<String> keys = redisTemplate.keys(BLACKLIST_IP_KEY + StringConsts.COLON + "*");
+        List<RouteDefinition> routeDefinitionList = Lists.newArrayList();
         for (String key : changeEvent.changedKeys()) {
             ConfigChange change = changeEvent.getChange(key);
             if (change.getPropertyName().contains(ApolloConsts.DYNAMICROUTE)) {
@@ -54,9 +62,12 @@ public class ApolloRouteChanged extends AbstractTemplateService {
                 String oldValue = change.getOldValue();
                 redisService.hashPut(DYNAMIC_ROUTE_KEY, change.getPropertyName(), newValue);
                 redisService.hashPut(DYNAMIC_ROUTE_KEY_OLD, change.getPropertyName(), oldValue);
-                log.info("DYNAMIC_ROUTE new Value into Redis  - {}", newValue);
-                log.info("DYNAMIC_ROUTE old Value into Redis  - {}", oldValue);
+                log.info("从Apollo读取动态路由新的数据已录入Redis  - {}", newValue);
+                log.info("从Apollo读取动态路由回滚数据已录入Redis  - {}", oldValue);
+                routeDefinitionList.add(JSON.parseObject(newValue, RouteDefinition.class));
             }
         }
+        dynamicRouteService.add(routeDefinitionList);
+        log.info("当前动态路由设置信息已生效");
     }
 }

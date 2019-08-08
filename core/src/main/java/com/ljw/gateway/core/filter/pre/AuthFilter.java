@@ -1,4 +1,4 @@
-package com.ljw.gateway.core.filter;
+package com.ljw.gateway.core.filter.pre;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @ClassName: AuthFilter
- * @Description: AuthFilter
+ * @Description: 鉴权校验过滤器
  * @Author: ljw
  * @Date: 2019/7/26 14:07
  **/

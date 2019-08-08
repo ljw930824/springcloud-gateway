@@ -17,6 +17,10 @@ spring:
       password: admin
   boot:
     admin:
+      notify:
+        mail:
+          from: luojiawei0078@126.com
+          to: aijfanta@gmail.com
       client:
         url: http://localhost:8081
         instance:
@@ -25,6 +29,7 @@ spring:
             user.password: ${spring.security.user.password} #can access the protected client endpoints
   mail:
     host: smtp.126.com
+    port: 25
     username: luojiawei0078@126.com
     password: ljw930824
     properties:
@@ -34,6 +39,7 @@ spring:
           starttls:
             enable: true
             required: true
+
 management:
   endpoints:
     web:
