@@ -3,7 +3,7 @@ package com.ljw.gateway.business.command;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ljw.gateway.common.constants.RedisKeyConsts;
-import com.ljw.gateway.core.route.DynamicRouteServiceImpl;
+import com.ljw.gateway.core.route.DynamicRouteResolver;
 import com.ljw.gateway.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class RouteInitFromRedis implements CommandLineRunner {
     private RedisService redisService;
 
     @Autowired
-    private DynamicRouteServiceImpl dynamicRouteService;
+    private DynamicRouteResolver dynamicRouteService;
 
     @Override
     public void run(String... args) throws Exception {

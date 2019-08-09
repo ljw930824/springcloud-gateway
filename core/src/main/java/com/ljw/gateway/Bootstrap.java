@@ -1,7 +1,7 @@
 package com.ljw.gateway;
 
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
-import com.ljw.gateway.core.resolver.HostAddrKeyResolver;
+import com.ljw.gateway.core.ratelimiterkeyresolver.HostAddrKeyResolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;

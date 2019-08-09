@@ -7,7 +7,7 @@ import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.google.common.collect.Lists;
 import com.ljw.gateway.business.apollo.template.AbstractTemplateService;
 import com.ljw.gateway.common.constants.ApolloConsts;
-import com.ljw.gateway.core.route.DynamicRouteServiceImpl;
+import com.ljw.gateway.core.route.DynamicRouteResolver;
 import com.ljw.gateway.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class ApolloRouteChanged extends AbstractTemplateService {
     private RedisService redisService;
 
     @Autowired
-    private DynamicRouteServiceImpl dynamicRouteService;
+    private DynamicRouteResolver dynamicRouteService;
 
     @Override
     @ApolloConfigChangeListener("TEST1.123")

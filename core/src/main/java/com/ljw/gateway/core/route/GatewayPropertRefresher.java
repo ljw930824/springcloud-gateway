@@ -28,9 +28,9 @@ public class GatewayPropertRefresher implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     private GatewayProperties gatewayProperties;
-    private DynamicRouteServiceImpl dynamicRouteService;
+    private DynamicRouteResolver dynamicRouteService;
 
-    public GatewayPropertRefresher(DynamicRouteServiceImpl dynamicRouteService, GatewayProperties gatewayProperties) {
+    public GatewayPropertRefresher(DynamicRouteResolver dynamicRouteService, GatewayProperties gatewayProperties) {
         this.dynamicRouteService = dynamicRouteService;
         this.gatewayProperties = gatewayProperties;
     }

@@ -26,7 +26,7 @@ import java.util.List;
  * @version 1.0<br />
  */
 @Component
-public class DynamicRouteServiceImpl implements ApplicationEventPublisherAware {
+public class DynamicRouteResolver implements ApplicationEventPublisherAware {
 
     @Autowired
     private RouteDefinitionWriter routeDefinitionWriter;

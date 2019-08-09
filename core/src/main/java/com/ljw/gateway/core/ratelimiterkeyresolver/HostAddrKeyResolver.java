@@ -1,4 +1,4 @@
-package com.ljw.gateway.core.resolver;
+package com.ljw.gateway.core.ratelimiterkeyresolver;
 
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.web.server.ServerWebExchange;
