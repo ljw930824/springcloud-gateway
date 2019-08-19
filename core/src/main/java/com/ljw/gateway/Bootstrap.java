@@ -6,9 +6,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 @RestController
@@ -16,14 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableCircuitBreaker
 public class Bootstrap {
 
-    @GetMapping("/")
-    public String index() {
-        return "Hello Spring Boot";
+    @RequestMapping(value = "/fallback")
+    @ResponseStatus
+    public Mono<Map<String, Object>> fallback(ServerWebExchange exchange, Throwable throwable) {
+        Map<String, Object> result = new HashMap<>(2);
+        ServerHttpRequest request = exchange.getRequest();
+//        result.put("path", request.getPath().pathWithinApplication().value());
+//        result.put("method", request.getMethodValue());
+//        if (null != throwable.getCause()) {
+//            result.put("message", throwable.getCause().getMessage());
+//        } else {
+//            result.put("message", throwable.getMessage());
+//        }
+        result.put("code", "-100");
+        result.put("data", "service not available");
+        return Mono.just(result);
     }
 
-    @GetMapping("/getname/{firstname}/{lastname}")
-    public String getName(@PathVariable String firstname, @PathVariable String lastname) {
-        return "Hello" + firstname + "   " + lastname;
+
+    @RequestMapping("/timeout")
+    public Mono<Map<String, Object>> timeout(ServerWebExchange exchange, Throwable throwable) throws InterruptedException {
+        Map<String, Object> result = new HashMap<>(2);
+        ServerHttpRequest request = exchange.getRequest();
+        result.put("code", "-100");
+        result.put("data", "service not available");
+        Thread.sleep(10000L);
+        return Mono.just(result);
     }
 
     public static void main(String[] args) {

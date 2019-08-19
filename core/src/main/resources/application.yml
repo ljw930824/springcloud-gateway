@@ -42,16 +42,34 @@ spring:
         locator:
           lower-case-service-id: true
       routes:
-        - id: limit_route
-          uri: http://httpbin.org:80/get
+#        - id: after_route
+#          uri: http://example.org
+#          predicates:
+#            - After=2018-01-20T06:06:06+08:00[Asia/Shanghai]
+        - id: path_route
+          uri: http://example.org
           predicates:
-            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+            - Path=/foo/{segment}
+#          filters:
+#            - name: CustomHystrix
+#              args:
+#                name: CustomHystrix
+#                fallbackUri: forward:/fallback
+#                timeout:
+#                  order-remote: 100
   #        filters:
   #        - name: RateLimiter
   #          args:
   #            key-resolver: '#{@hostAddrKeyResolver}'
   #            redis-rate-limiter.replenishRate: 20
   #            redis-rate-limiter.burstCapacity: 40
+      default-filters:
+        - name: CustomHystrix
+          args:
+            name: CustomHystrix
+            fallbackUri: forward:/fallback
+            timeout:
+              order-remote: 1
   # reids 配置
   redis:
     host: 127.0.0.1
@@ -75,14 +93,18 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
-# 断路器
+# hystrix 信号量隔离，3秒后自动超时
 hystrix:
   command:
-    fallbackcmd:
+    default:
       execution:
         isolation:
+          strategy: SEMAPHORE
           thread:
-            timeoutInMilliseconds: 30000
+            timeoutInMilliseconds: 3000
+  shareSecurityContext: true
+
+
 # LB 配置
 ribbon:
   ServerListRefreshInterval: 1000
