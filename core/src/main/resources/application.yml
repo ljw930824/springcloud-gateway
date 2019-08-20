@@ -34,10 +34,21 @@ spring:
         password: admin   #can register at the protected server api
         url: http://localhost:8082
   cloud:
+    #重试
     loadbalancer:
       retry:
         enabled: true
     gateway:
+      #HTTPS 信任
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
+#          trustedX509Certificates:
+#            - cert1.pem
+#            - cert2.pem
+#          handshake-timeout-millis: 10000
+#          close-notify-flush-timeout-millis: 3000
+#          close-notify-read-timeout-millis: 0
       discovery:
         locator:
           lower-case-service-id: true
@@ -69,6 +80,9 @@ spring:
             name: CustomHystrix
             fallbackUri: forward:/fallback
             timeout:
+              # 熔断单位是 ms
+              # 可以自定义不同路由URL的超时时间，根据-来代替路劲/。default 代表默认的超时熔断时间
+              default: 3000
               order-remote: 1
   # reids 配置
   redis:
@@ -107,10 +121,15 @@ hystrix:
 
 # LB 配置
 ribbon:
-  ServerListRefreshInterval: 1000
-  OkToRetryOnAllOperations: true
-  MaxAutoRetriesNextServer: 3
-  MaxAutoRetries: 1
-  ReadTimeout: 5000
-  ConnectTimeout: 3000
-  retryableStatusCodes: 404,500,503
+  secure-ports:
+  http:
+    client:
+      enabled: true
+#ribbon:
+#  ServerListRefreshInterval: 1000
+#  OkToRetryOnAllOperations: true
+#  MaxAutoRetriesNextServer: 3
+#  MaxAutoRetries: 1
+#  ReadTimeout: 5000
+#  ConnectTimeout: 3000
+#  retryableStatusCodes: 404,500,503

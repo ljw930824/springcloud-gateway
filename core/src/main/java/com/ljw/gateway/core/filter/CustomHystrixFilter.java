@@ -6,6 +6,7 @@ import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixObservableCommand;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -44,7 +45,9 @@ public class CustomHystrixFilter extends AbstractGatewayFilterFactory<CustomHyst
 
     private static final String FORWARD_KEY = "forward";
     private static final String NAME = "CustomHystrix";
-    private static final int TIMEOUT_MS = 3000;
+    /** 当前默认断路器的超时时间 **/
+    @Value("${spring.cloud.gateway.default-filters[0].args.timeout.default:#{3000}}")
+    private int TIMEOUT_MS;
     private final ObjectProvider<DispatcherHandler> dispatcherHandlerProvider;
     private volatile DispatcherHandler dispatcherHandler;
     private boolean processConfig = false;
