@@ -1,4 +1,4 @@
-package com.ljw.gateway.core.filter;
+package com.ljw.gateway.core.filter.error;
 
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;

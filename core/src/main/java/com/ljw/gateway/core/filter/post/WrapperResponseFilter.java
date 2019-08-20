@@ -1,4 +1,4 @@
-package com.ljw.gateway.core.filter;
+package com.ljw.gateway.core.filter.post;
 
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
