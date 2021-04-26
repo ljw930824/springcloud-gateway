@@ -25,7 +25,7 @@
         <jedis.version>2.9.0</jedis.version>
         <common.lang3.version>3.5</common.lang3.version>
         <common.pool2.version>2.6.2</common.pool2.version>
-        <commons.io.version>2.5</commons.io.version>
+        <commons.io.version>2.7</commons.io.version>
         <common.bean.util.version>1.9.3</common.bean.util.version>
         <kryo.version>4.0.0</kryo.version>
         <fastjson.version>1.2.58</fastjson.version>
